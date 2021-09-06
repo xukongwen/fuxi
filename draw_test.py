@@ -32,6 +32,7 @@ LINE_WIDTH =16
 
 # 字体
 FONT = pygame.font.Font("KKong3.ttf", 50)
+
 # 临时的八卦
 list_test = [1,-1,1,1,-1]
 
@@ -47,14 +48,16 @@ def text (text,x,y):
     text_render = font.render(text, True, (255,255,255))
     scr.blit(text_render,(x,y))
 
-
+# 如古人般，竖着写字
 def display_text_animation(string):
     text = ''
     for i in range(len(string)):
-        text += string[i]
+        text = string[i]
         text_surface = FONT.render(text, True, BLACK)
+        text_width = text_surface.get_width()
+        text_height = text_surface.get_height()
         text_rect = text_surface.get_rect()
-        text_rect.center = (SCR_WIDTH/2, SCR_HIGH/2)
+        text_rect.center = (800 , 100 + text_height*i)
         scr.blit(text_surface, text_rect)
         pygame.display.update()
         pygame.time.wait(100)
@@ -78,10 +81,12 @@ for i in list_test:
     if i == -1:
         yin(SCR_WIDTH/2,SCR_HIGH/2 - GAP_OUT*total)
         total += 1
+    
+    # 每画一次就暂停一下，这样有动画的效果
     pygame.display.update()
-    pygame.time.wait(300)
+    pygame.time.wait(100)
 
-# display_text_animation('Hello World!')
+display_text_animation('你好世界!')
 
 
 # 显示图像
