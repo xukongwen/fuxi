@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # 实验用pygame来画出先天八卦的衍生动画
-
+from itertools import chain
 import pygame
 pygame.init()
 
@@ -43,9 +43,9 @@ scr = pygame.display.set_mode((SCR_WIDTH,SCR_HIGH))
 scr.fill(WHITE)
 
 # 在座标上显示一行中文
-def text (text,x,y):
+def text_draw (text,x,y):
     font = pygame.font.Font("KKong3.ttf", 50)
-    text_render = font.render(text, True, (255,255,255))
+    text_render = font.render(text, True, (0,0,0))
     scr.blit(text_render,(x,y))
 
 # 如古人般，竖着写字
@@ -54,14 +54,57 @@ def display_text_animation(string):
     for i in range(len(string)):
         text = string[i]
         text_surface = FONT.render(text, True, BLACK)
+        # 获得每个字的宽与高
         text_width = text_surface.get_width()
         text_height = text_surface.get_height()
         text_rect = text_surface.get_rect()
+        # 竖着写
         text_rect.center = (800 , 100 + text_height*i)
         scr.blit(text_surface, text_rect)
+        #一个字一个字的写
         pygame.display.update()
         pygame.time.wait(100)
 
+def truncline(text, font, maxwidth):
+        real=len(text)       
+        stext=text           
+        l=font.size(text)[0]
+        cut=0
+        a=0                  
+        done=1
+        old = None
+        while l > maxwidth:
+            a=a+1
+            n=text.rsplit(None, a)[0]
+            if stext == n:
+                cut += 1
+                stext= n[:-cut]
+            else:
+                stext = n
+            l=font.size(stext)[0]
+            real=len(stext)               
+            done=0                        
+        return real, done, stext             
+        
+def wrapline(text, font, maxwidth): 
+    done=0                      
+    wrapped=[]                  
+                               
+    while not done:             
+        nl, done, stext=truncline(text, font, maxwidth) 
+        wrapped.append(stext.strip())                  
+        text=text[nl:] 
+    total = 1
+    for i in wrapped:
+        text_draw(i, 50, 50*total)        
+        total += 1                        
+    return wrapped
+
+def wrap_multi_line(text, font, maxwidth):
+    """ returns text taking new lines into account.
+    """
+    lines = chain(*(wrapline(line, font, maxwidth) for line in text.splitlines()))
+    return list(lines)
 
 # 在座标画一个阳
 def yang (x,y):
@@ -87,7 +130,8 @@ for i in list_test:
     pygame.time.wait(100)
 
 display_text_animation('你好世界!')
-
+#drawText(scr, '实验一下特别特别长的句子', BLACK, (30,30,200,200), FONT, aa=False, bkg=None)
+wrapline("实验一下特别特别长的句子实验一下特别特别长的句子实验一下特别特别长的句子", FONT, 520)
 
 # 显示图像
 pygame.display.flip() 
