@@ -17,6 +17,10 @@ SCR_HIGH = 480
 GAP_OUT = 30
 # 卦内部空隙
 GAP_IN =10
+# 方块卦的边缘像素
+GAP_BOX = 2
+# 方块卦之间的空隙
+GAP_BOX_OUT = 10
 
 # 各种颜色
 color = (0,255,255) 
@@ -35,6 +39,10 @@ FONT = pygame.font.Font("KKong3.ttf", 50)
 
 # 临时的八卦
 list_test = [1,-1,1,1,-1]
+
+list_two_gua = [1,-1]
+list_four_gua = [[1,1],[1,-1],[-1,1],[-1,-1]]
+list_bagua = [[1,1,1],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1],[-1,-1,1],[-1,-1,-1]]
 
 # 创建屏幕
 scr = pygame.display.set_mode((SCR_WIDTH,SCR_HIGH))
@@ -59,12 +67,13 @@ def display_text_animation(string):
         text_height = text_surface.get_height()
         text_rect = text_surface.get_rect()
         # 竖着写
-        text_rect.center = (800 , 100 + text_height*i)
+        text_rect.center = (1200 , 50 + text_height*i)
         scr.blit(text_surface, text_rect)
         #一个字一个字的写
         pygame.display.update()
         pygame.time.wait(100)
 
+# 长句子自动换行（横版）
 def truncline(text, font, maxwidth):
         real=len(text)       
         stext=text           
@@ -115,23 +124,86 @@ def yin (x,y):
     pygame.draw.line(scr, BLACK, (x, y), (x+YIN_WIDTH,y),LINE_WIDTH)
     pygame.draw.line(scr, BLACK, (x+YIN_WIDTH+GAP_IN, y), (x+YIN_WIDTH+GAP_IN+YIN_WIDTH,y),LINE_WIDTH)
 
+# 画阳（方块）
+def yang_box(x,y,w):
+    rect = pygame.Rect(x,y, (w-GAP_BOX), (w-GAP_BOX))
+    pygame.draw.rect(scr, BLACK, rect, GAP_BOX)
+    
+# 画阴（方块）
+def yin_box(x,y,w):
+    rect = pygame.Rect(x,y, w, w)
+    pygame.draw.rect(scr, BLACK, rect)
 
-total = 1
-for i in list_test:
-    if i == 1:
-        yang(SCR_WIDTH/2,SCR_HIGH/2 - GAP_OUT*total)
-        total += 1
-    if i == -1:
-        yin(SCR_WIDTH/2,SCR_HIGH/2 - GAP_OUT*total)
-        total += 1
+# 画具体的卦
+def draw_gua_cn():
+    total = 1
+    for i in list_test:
+        if i == 1:
+            yang(SCR_WIDTH/2,SCR_HIGH/2 - GAP_OUT*total)
+            total += 1
+        if i == -1:
+            yin(SCR_WIDTH/2,SCR_HIGH/2 - GAP_OUT*total)
+            total += 1
     
     # 每画一次就暂停一下，这样有动画的效果
-    pygame.display.update()
-    pygame.time.wait(100)
+        pygame.display.update()
+        pygame.time.wait(100)
 
-display_text_animation('你好世界!')
-#drawText(scr, '实验一下特别特别长的句子', BLACK, (30,30,200,200), FONT, aa=False, bkg=None)
-wrapline("实验一下特别特别长的句子实验一下特别特别长的句子实验一下特别特别长的句子", FONT, 520)
+# 画图形的卦
+def draw_gua(width):
+    total = 1
+    for i in list_test:
+        if i == 1:
+            yang_box(500,400 - (width+width*0.2)*total,width) # 这里用width来控制大小，其间隙的大小是width的20%
+            total += 1
+        if i == -1:
+            yin_box(500,400 - (width+width*0.2)*total,width)
+            total += 1
+    
+    # 每画一次就暂停一下，这样有动画的效果
+        pygame.display.update()
+        pygame.time.wait(100)
+
+# 画横向的图形八卦
+def draw_all_gua(list,width):
+    total_all = 1
+    for i in list:
+        total = 1
+        for j in i:
+            if j ==1:
+                yang_box((50+ 40*total_all),400 - (width+width*0.2)*total,width)
+                total += 1
+            if j == -1:
+                yin_box((50 + 40*total_all),400 - (width+width*0.2)*total,width)
+                total += 1
+        total_all += 1
+        
+# 计算八卦第一个版本
+def calc_gua(num):
+    if num == 0:
+        return [0] # 道
+    elif num == 1:
+        return [[1], [-1]]
+    else:
+        pre_gua = calc_gua(num - 1)
+        new_gua = []
+        for gua in pre_gua:
+            new_gua.extend([[1] + gua, [-1] + gua])
+        return new_gua
+
+
+#draw_gua_cn()
+#draw_gua(50)
+draw_all_gua(calc_gua(6),30)
+
+
+
+
+# 竖排古文实验运行
+#display_text_animation('伏羲先天八卦实验!')
+
+# 自动换行实验
+#wrapline("实验一下特别特别长的句子实验一下特别特别长的句子实验一下特别特别长的句子", FONT, 520)
 
 # 显示图像
 pygame.display.flip() 

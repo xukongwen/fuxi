@@ -28,6 +28,8 @@ class  GuaCalculator(object):
         return gua
 
 
-if __name__ == "__main__":
-    calc = GuaCalculator(int(sys.argv[1]))
-    pprint(calc(int(sys.argv[2])))
+calc = GuaCalculator(10,4)
+
+#if __name__ == "__main__":
+ #   calc = GuaCalculator(int(sys.argv[1]))
+ #   pprint(calc(int(sys.argv[2])))
