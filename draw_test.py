@@ -1,5 +1,8 @@
 # coding=utf-8
 
+
+
+
 # 实验用pygame来画出先天八卦的衍生动画
 from itertools import chain
 import pygame
