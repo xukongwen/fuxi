@@ -68,11 +68,14 @@ def text_optic_animate (text,x,y,a):
     font = pygame.font.Font("KKong3.ttf", 50)
     text_render = font.render(text, True, (0,0,0))
     text_render.set_alpha(a)
+    x += 1
     scr.blit(text_render,(x,y))
+    clock.tick(60)
+    pygame.display.update()
 
 
 # 如古人般，竖着写字
-def draw_text_v (string,x,y,time):
+def draw_text_v (string,x,y,a,time):
     text = ''
     for i in range(len(string)):
         text = string[i]
@@ -83,6 +86,8 @@ def draw_text_v (string,x,y,time):
         text_rect = text_surface.get_rect()
         # 竖着写
         text_rect.center = (x , y + text_height*i)
+        text_surface.set_alpha(a)
+        a += 10
         scr.blit(text_surface, text_rect)
         #一个字一个字的写
         pygame.display.update()
@@ -121,7 +126,7 @@ def wrapline(text, font, gap,maxwidth):
         text=text[nl:] 
     total = 1
     for i in wrapped:
-        draw_text_v(i, (1200-gap*total),50,50)        
+        draw_text_v(i, (1200-gap*total),50,1,50)        
         total += 1                        
     return wrapped
 # 画出竖着的中文，多行
@@ -206,12 +211,12 @@ def calc_gua(num):
             new_gua.extend([[1] + gua, [-1] + gua])
         return new_gua
 
-
+img1_sur = pygame.image.load('data/img/none-logo-black.png')
 #draw_gua_cn()
 #draw_gua(50)
 
 # 实验block
-text_optic_animate('sdfsfdsdf',50,50,Alpha)
+#text_optic_animate('sdfsfdsdf',50,50,Alpha)
 
 # 畫整體的掛
 #draw_all_gua(calc_gua(6),30)
@@ -224,23 +229,27 @@ text_optic_animate('sdfsfdsdf',50,50,Alpha)
 #wrapline("实验一下特别特别长的句子实验一下特别特别长的句子实验一下特别特别长的句子", FONT, 520)
 
 # 显示图像
-pygame.display.flip() 
+#pygame.display.flip() 
 
-
+x1 = 50
+x2 = 50
 
 # 游戏的loop
 running = True
 while running:
+    scr.fill(WHITE)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-    set_active_effect('fade_out')
     
     if Alpha > 1:
         Alpha += 4
-        text_optic_animate('sdfsfdsdf',50,50,Alpha)
-        text_optic_animate.set_active
+        x1 += 1
+        
+        #text_optic_animate('sdfsfdsdf',600,50,Alpha)
+        wrapline("实验一下特别特别长的句子实验一下特别特别长的句子实验一下特别特别长的句子", FONT, 55,520)
+    
 
-    pygame.display.flip()
+    #pygame.display.flip()
+    pygame.display.update()
     clock.tick(60)
