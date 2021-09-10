@@ -1,6 +1,8 @@
 import pygame
 import sys
 
+# 最基本的画grid
+
 BLACK = (0, 0, 0)
 WHITE = (200, 200, 200)
 WINDOW_HEIGHT = 400

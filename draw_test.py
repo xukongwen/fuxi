@@ -43,7 +43,7 @@ YIN_WIDTH = 30
 LINE_WIDTH =16
 
 # 字体
-FONT = pygame.font.Font("KKong3.ttf", 50)
+FONT = pygame.font.Font("data/font/KKong3.ttf", 50)
 
 # 所有单体方块的组
 
@@ -57,12 +57,12 @@ scr.fill(WHITE)
 
 # 在座标上显示一行中文
 def text_draw (text,x,y):
-    font = pygame.font.Font("KKong3.ttf", 50)
+    font = pygame.font.Font("data/font/KKong3.ttf", 50)
     text_render = font.render(text, True, (0,0,0))
     scr.blit(text_render,(x,y))
 
 def text_optic_animate (text,x,y,a):
-    font = pygame.font.Font("KKong3.ttf", 50)
+    font = pygame.font.Font("data/font/KKong3.ttf", 50)
     text_render = font.render(text, True, (0,0,0))
     text_render.set_alpha(a)
     x += 1
@@ -192,9 +192,11 @@ def draw_all_gua(list,width,x,y):
             if j == 1:
                 yang_box((x+ (width+width*0.2)*total_all),y - (width+width*0.2)*total,width)
                 total += 1
+                
             if j == -1:
                 yin_box((x + (width+width*0.2)*total_all),y - (width+width*0.2)*total,width)
                 total += 1
+               
         total_all += 1
         
 # 计算八卦第一个版本
@@ -251,9 +253,7 @@ while running:
     CHANGE = False
 
     keys = pygame.key.get_pressed()
-    #mouse = event.type == pygame.MOUSEBUTTONDOWN
-
-
+    
     if keys[pygame.K_LEFT]: 
         x1 += -10
     if keys[pygame.K_RIGHT]:
@@ -273,7 +273,7 @@ while running:
         all_gua = calc_gua(6 + gua)
         CHANGE = False
     
-    # 可以拖拽整个卦相
+    # 可以拖拽缩放整个卦相，但是觉得画的方法有问题，应该是第一次和有变动的时候才画，现在是每一帧都画
     draw_all_gua(all_gua,w,x1,y1)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -284,15 +284,13 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             for box in ALL_BOX:
                 if box.collidepoint(event.pos):
-                    #print(box)
                     IN_BOX = box
             if event.button == 4:# 向上滚放大
                 w += 1
 
-                print('4')
             elif event.button == 5:# 向下滚缩小
                 w += -1
-                print('5')
+                
         elif event.type == pygame.MOUSEBUTTONUP:
             IN_BOX = None  
         elif event.type == pygame.MOUSEMOTION:
