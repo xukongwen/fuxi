@@ -45,12 +45,9 @@ LINE_WIDTH =16
 # 字体
 FONT = pygame.font.Font("KKong3.ttf", 50)
 
-# 临时的八卦
-list_test = [1,-1,1,1,-1]
+# 所有单体方块的组
 
-list_two_gua = [1,-1]
-list_four_gua = [[1,1],[1,-1],[-1,1],[-1,-1]]
-list_bagua = [[1,1,1],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1],[-1,-1,1],[-1,-1,-1]]
+ALL_BOX = []
 
 # 创建屏幕
 scr = pygame.display.set_mode((SCR_WIDTH,SCR_HIGH))
@@ -148,11 +145,13 @@ def yin (x,y):
 def yang_box(x,y,w):
     rect = pygame.Rect(x,y, (w-GAP_BOX), (w-GAP_BOX))
     pygame.draw.rect(scr, BLACK, rect, GAP_BOX)
+    ALL_BOX.append(rect)
     
 # 画阴（方块）
 def yin_box(x,y,w):
     rect = pygame.Rect(x,y, w, w)
     pygame.draw.rect(scr, BLACK, rect)
+    ALL_BOX.append(rect)
 
 # 画具体的卦
 def draw_gua_cn():
@@ -185,16 +184,16 @@ def draw_gua(width):
         pygame.time.wait(100)
 
 # 画横向的图形八卦
-def draw_all_gua(list,width):
+def draw_all_gua(list,width,x,y):
     total_all = 1
     for i in list:
         total = 1
         for j in i:
-            if j ==1:
-                yang_box((50+ 40*total_all),400 - (width+width*0.2)*total,width)
+            if j == 1:
+                yang_box((x+ (width+width*0.2)*total_all),y - (width+width*0.2)*total,width)
                 total += 1
             if j == -1:
-                yin_box((50 + 40*total_all),400 - (width+width*0.2)*total,width)
+                yin_box((x + (width+width*0.2)*total_all),y - (width+width*0.2)*total,width)
                 total += 1
         total_all += 1
         
@@ -219,7 +218,7 @@ img1_sur = pygame.image.load('data/img/none-logo-black.png')
 #text_optic_animate('sdfsfdsdf',50,50,Alpha)
 
 # 畫整體的掛
-#draw_all_gua(calc_gua(6),30)
+#draw_all_gua(calc_gua(6),30,100,300)
 
 
 # 竖排古文实验运行
@@ -232,23 +231,86 @@ img1_sur = pygame.image.load('data/img/none-logo-black.png')
 #pygame.display.flip() 
 
 x1 = 50
+y1 = 300
 x2 = 50
+w = 50
+
+rect = pygame.Rect(100, 100, 161, 100)
+rect_selected = False
+
+all_gua = calc_gua(6)
+IN_BOX = None
+gua = 0
 
 # 游戏的loop
 running = True
 while running:
     scr.fill(WHITE)
+    # 归零各种参数，哈哈复归是必须的
+    ALL_BOX = []
+    CHANGE = False
+
+    keys = pygame.key.get_pressed()
+    #mouse = event.type == pygame.MOUSEBUTTONDOWN
+
+
+    if keys[pygame.K_LEFT]: 
+        x1 += -10
+    if keys[pygame.K_RIGHT]:
+        x1 += 10
+
+    # 增加一个次方
+    if keys[pygame.K_UP]:
+        CHANGE = True
+        gua += 1
+
+    # 减少一个次方
+    if keys[pygame.K_DOWN]:
+        CHANGE = True
+        gua += -1
+    # 如果改变了才再次计算
+    if CHANGE:
+        all_gua = calc_gua(6 + gua)
+        CHANGE = False
+    
+    # 可以拖拽整个卦相
+    draw_all_gua(all_gua,w,x1,y1)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                x1 += -1
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            for box in ALL_BOX:
+                if box.collidepoint(event.pos):
+                    #print(box)
+                    IN_BOX = box
+            if event.button == 4:# 向上滚放大
+                w += 1
+
+                print('4')
+            elif event.button == 5:# 向下滚缩小
+                w += -1
+                print('5')
+        elif event.type == pygame.MOUSEBUTTONUP:
+            IN_BOX = None  
+        elif event.type == pygame.MOUSEMOTION:
+            if IN_BOX is not None:
+                x1 += event.rel[0]
+                y1 += event.rel[1]
+
+                
+        if event.type == pygame.KEYUP:
+            pass
+            
     
-    if Alpha > 1:
-        Alpha += 4
-        x1 += 1
-        
-        #text_optic_animate('sdfsfdsdf',600,50,Alpha)
-        wrapline("实验一下特别特别长的句子实验一下特别特别长的句子实验一下特别特别长的句子", FONT, 55,520)
+
     
+   
+    #wrapline("实验一下特别特别长的句子实验一下特别特别长的句子实验一下特别特别长的句子", FONT, 55,520)
+
+
 
     #pygame.display.flip()
     pygame.display.update()
