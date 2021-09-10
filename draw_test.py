@@ -4,11 +4,15 @@
 
 
 # 实验用pygame来画出先天八卦的衍生动画
+from typing import Union
 from itertools import chain
 import pygame
+import pygame_gui
 pygame.init()
 
 # 一些常数设定
+
+clock = pygame.time.Clock()
 
 # 屏幕宽高
 SCR_WIDTH = 1280
@@ -29,6 +33,7 @@ GAP_BOX_OUT = 10
 color = (0,255,255) 
 WHITE = (255,255,255)
 BLACK = (0,0,0)
+Alpha = 2
 
 # 一个阳卦的长度
 GUA_WIDTH = 70
@@ -58,6 +63,13 @@ def text_draw (text,x,y):
     font = pygame.font.Font("KKong3.ttf", 50)
     text_render = font.render(text, True, (0,0,0))
     scr.blit(text_render,(x,y))
+
+def text_optic_animate (text,x,y,a):
+    font = pygame.font.Font("KKong3.ttf", 50)
+    text_render = font.render(text, True, (0,0,0))
+    text_render.set_alpha(a)
+    scr.blit(text_render,(x,y))
+
 
 # 如古人般，竖着写字
 def draw_text_v (string,x,y,time):
@@ -97,7 +109,8 @@ def truncline(text, font, maxwidth):
             real=len(stext)               
             done=0                        
         return real, done, stext             
-        
+
+# 画出竖着的中文，单行        
 def wrapline(text, font, gap,maxwidth): 
     done=0                      
     wrapped=[]                  
@@ -111,10 +124,9 @@ def wrapline(text, font, gap,maxwidth):
         draw_text_v(i, (1200-gap*total),50,50)        
         total += 1                        
     return wrapped
-
+# 画出竖着的中文，多行
 def wrap_multi_line(text, font, maxwidth):
-    """ returns text taking new lines into account.
-    """
+    
     lines = chain(*(wrapline(line, font, maxwidth) for line in text.splitlines()))
     return list(lines)
 
@@ -198,12 +210,15 @@ def calc_gua(num):
 #draw_gua_cn()
 #draw_gua(50)
 
+# 实验block
+text_optic_animate('sdfsfdsdf',50,50,Alpha)
+
 # 畫整體的掛
-draw_all_gua(calc_gua(6),30)
+#draw_all_gua(calc_gua(6),30)
 
 
 # 竖排古文实验运行
-wrapline("sdf士大夫實得分數地方",FONT,55,400)
+#wrapline("sdf士大夫實得分數地方",FONT,55,400)
 
 # 自动换行实验
 #wrapline("实验一下特别特别长的句子实验一下特别特别长的句子实验一下特别特别长的句子", FONT, 520)
@@ -219,3 +234,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    set_active_effect('fade_out')
+    
+    if Alpha > 1:
+        Alpha += 4
+        text_optic_animate('sdfsfdsdf',50,50,Alpha)
+        text_optic_animate.set_active
+
+    pygame.display.flip()
+    clock.tick(60)
