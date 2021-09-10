@@ -2,5 +2,5 @@
 
 python $1
 
-clear
+#clear
 

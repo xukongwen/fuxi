@@ -57,7 +57,7 @@ def text_draw (text,x,y):
     scr.blit(text_render,(x,y))
 
 # 如古人般，竖着写字
-def display_text_animation(string):
+def draw_text_v (string,x,y,time):
     text = ''
     for i in range(len(string)):
         text = string[i]
@@ -67,11 +67,11 @@ def display_text_animation(string):
         text_height = text_surface.get_height()
         text_rect = text_surface.get_rect()
         # 竖着写
-        text_rect.center = (1200 , 50 + text_height*i)
+        text_rect.center = (x , y + text_height*i)
         scr.blit(text_surface, text_rect)
         #一个字一个字的写
         pygame.display.update()
-        pygame.time.wait(100)
+        pygame.time.wait(time)
 
 # 长句子自动换行（横版）
 def truncline(text, font, maxwidth):
@@ -95,7 +95,7 @@ def truncline(text, font, maxwidth):
             done=0                        
         return real, done, stext             
         
-def wrapline(text, font, maxwidth): 
+def wrapline(text, font, gap,maxwidth): 
     done=0                      
     wrapped=[]                  
                                
@@ -105,7 +105,7 @@ def wrapline(text, font, maxwidth):
         text=text[nl:] 
     total = 1
     for i in wrapped:
-        text_draw(i, 50, 50*total)        
+        draw_text_v(i, (1200-gap*total),50,50)        
         total += 1                        
     return wrapped
 
@@ -194,13 +194,13 @@ def calc_gua(num):
 
 #draw_gua_cn()
 #draw_gua(50)
+
+# 畫整體的掛
 draw_all_gua(calc_gua(6),30)
 
 
-
-
 # 竖排古文实验运行
-#display_text_animation('伏羲先天八卦实验!')
+wrapline("sdf士大夫實得分數地方",FONT,55,400)
 
 # 自动换行实验
 #wrapline("实验一下特别特别长的句子实验一下特别特别长的句子实验一下特别特别长的句子", FONT, 520)
