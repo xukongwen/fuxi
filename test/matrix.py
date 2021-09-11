@@ -86,6 +86,7 @@ display_surface.set_alpha(alpha_value)
 
 clock = pygame.time.Clock()
 
+print(green_chars)
 
 class Symbol:
     def __init__(self, x, y):
