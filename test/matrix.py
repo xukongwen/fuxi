@@ -71,11 +71,10 @@ for i in jing_c:
         jing_d.append(j)
 #print(jing_d)
 
-print(randrange(3, 9))
 
-font = pygame.font.Font('KKong3.ttf', FONT_SIZE)
-font_2 = pygame.font.Font('KKong3.ttf', FONT_SIZE - FONT_SIZE // 6)
-font_3 = pygame.font.Font('KKong3.ttf', FONT_SIZE - FONT_SIZE // 3)
+font = pygame.font.Font('data/font/KKong3.ttf', FONT_SIZE)
+font_2 = pygame.font.Font('data/font/KKong3.ttf', FONT_SIZE - FONT_SIZE // 6)
+font_3 = pygame.font.Font('data/font/KKong3.ttf', FONT_SIZE - FONT_SIZE // 3)
 
 green_chars = [font.render(char, True, (randrange(0, 100), 255, randrange(0, 100))) for char in jing_d]
 green_chars_2 = [font_2.render(char, True, (40, randrange(100, 175), 40)) for char in jing_d]
@@ -92,11 +91,12 @@ class Symbol:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.speed = 40
+        self.speed = 50
         #choice是在list里选一个
         self.value = choice(green_chars)
 
     def draw(self):
+        # 從文章的list里選擇一個字
         self.value = choice(green_chars)
         self.y = self.y + self.speed if self.y < HEIGHT else -FONT_SIZE * randrange(1, 10)
         screen.blit(self.value, (self.x, self.y))
@@ -126,7 +126,8 @@ while run:
     [symbol_2.draw_2() for symbol_2 in symbols_2]
     [symbol_3.draw_3() for symbol_3 in symbols_3]
 
-    pygame.time.delay(140)
+    # 這里實際上是下落的速度
+    pygame.time.delay(70)
 
     pygame.display.update()
 
