@@ -28,8 +28,15 @@ class  GuaCalculator(object):
         return gua
 
 
-calc = GuaCalculator(10,4)
+def calc_gua(num):
+    calc = GuaCalculator(num)
+    gua = []
+    for i in range(calc.gua_pos_max):
+        gua.append(calc(i))
+    return gua
 
-#if __name__ == "__main__":
- #   calc = GuaCalculator(int(sys.argv[1]))
- #   pprint(calc(int(sys.argv[2])))
+
+if __name__ == "__main__":
+   # calc = GuaCalculator(int(sys.argv[1]))
+   # pprint(calc(int(sys.argv[2])))
+   pprint(calc_gua(int(sys.argv[1])))

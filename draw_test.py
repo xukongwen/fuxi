@@ -42,6 +42,10 @@ YIN_WIDTH = 30
 # 卦本身的高度（线条的厚度）
 LINE_WIDTH =16
 
+# math
+
+PI = 3.141592653589
+
 # 字体
 FONT = pygame.font.Font("data/font/KKong3.ttf", 50)
 
@@ -237,12 +241,19 @@ y1 = 300
 x2 = 50
 w = 50
 
+startpoint = pygame.math.Vector2(320, 240)
+endpoint = pygame.math.Vector2(170, 0)
+angle = 0
+
 rect = pygame.Rect(100, 100, 161, 100)
 rect_selected = False
 
 all_gua = calc_gua(6)
 IN_BOX = None
 gua = 0
+
+#pygame.draw.circle(scr, BLACK,(500,200),50,2)
+
 
 # 游戏的loop
 running = True
@@ -274,7 +285,7 @@ while running:
         CHANGE = False
     
     # 可以拖拽缩放整个卦相，但是觉得画的方法有问题，应该是第一次和有变动的时候才画，现在是每一帧都画
-    draw_all_gua(all_gua,w,x1,y1)
+    #draw_all_gua(all_gua,w,x1,y1)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -308,8 +319,13 @@ while running:
    
     #wrapline("实验一下特别特别长的句子实验一下特别特别长的句子实验一下特别特别长的句子", FONT, 55,520)
 
-
+    
 
     #pygame.display.flip()
+    
+    pygame.draw.arc(scr, BLACK,[210, 75, 150, 150], 0, PI/2, 2)
+    pygame.draw.rect(scr, BLACK,[210, 75, 150, 150],2)
+
+    
     pygame.display.update()
     clock.tick(60)

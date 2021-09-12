@@ -1,8 +1,8 @@
 # TODO
 - 读json文件，输出古文
-- 读twine文件
+- 用pygame实验一个类似linux桌面的东西
 ## 读伤寒
-## 模拟matrix
+
 ## 完整八卦动画
 
 
@@ -10,10 +10,17 @@
 # 模块
 
 - 文字透明渐变
+- 文字动画
 
 
 
 
 # Learn
 
-## import
+- import
+- 如何启动外面程序（linxu）
+
+
+# DONE
+
+## 模拟matrix
