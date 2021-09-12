@@ -242,27 +242,18 @@ img1_sur = pygame.image.load('data/img/none-logo-black.png')
 x1 = 50
 y1 = 300
 x2 = 50
-w = 50
+w = 1
 
-startpoint = pygame.math.Vector2(320, 240)
-endpoint = pygame.math.Vector2(170, 0)
-angle = 0
-
-rect = pygame.Rect(100, 100, 161, 100)
-rect_selected = False
-
-all_gua = calc_gua(6)
 IN_BOX = None
 gua = 0
 
 #pygame.draw.circle(scr, BLACK,(500,200),50,2)
 
 
-def draw_circle_gua(max_num):
-    x, y = 500, 500
-    j = 100
+def draw_circle_gua(max_num,j,gap,width):
+    x, y = SCR_WIDTH/2 -j, SCR_HIGH/2 - j
     space_radian = PI / 2 / 20
-    print("-----------------------------> start")
+    #print("-----------------------------> start")
     for num in range(1, max_num + 1):
         gua = calc_gua(num)
         # print("------>", num, gua)
@@ -271,10 +262,10 @@ def draw_circle_gua(max_num):
         single_gua_radian = 2 * PI / (2 ** num)
         single_gua_half_radian  = single_gua_radian / 2
         for layer in range(num - 1, -1, -1):
-            print("------------>>", num, layer)
-            j += 20
-            y -= 10
-            x -= 10
+            #print("------------>>", num, layer)
+            j += gap
+            y -= gap / 2
+            x -= gap / 2
             count = 0
             start_radian = PI / 2 - single_gua_half_radian + space_radian
             end_radian = start_radian + single_gua_radian - space_radian * 2
@@ -285,12 +276,12 @@ def draw_circle_gua(max_num):
                     end_radian = abs(end_radian - 2 * PI)
 
                 gua_value = gua[idx][layer]
-                print("------>", num, layer, y, idx, gua_value)
+                #print("------>", num, layer, y, idx, gua_value)
                 if gua_value == 1:
-                    print([x, y, j, j], start_radian, end_radian)
-                    pygame.draw.arc(scr, BLACK, [x, y, j, j], start_radian, end_radian, 5)
+                    #print([x, y, j, j], start_radian, end_radian)
+                    pygame.draw.arc(scr, RED, [x, y, j, j], start_radian, end_radian, width)
                 else:
-                    pygame.draw.arc(scr, RED, [x, y, j, j], start_radian, end_radian, 5)
+                    pygame.draw.arc(scr, BLACK, [x, y, j, j], start_radian, end_radian, width)
                 
                 
                 start_radian += single_gua_radian
@@ -337,6 +328,8 @@ while running:
     
     # 可以拖拽缩放整个卦相，但是觉得画的方法有问题，应该是第一次和有变动的时候才画，现在是每一帧都画
     #draw_all_gua(all_gua,w,x1,y1)
+    draw_circle_gua(1+ w,100,20,5)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -364,29 +357,6 @@ while running:
         if event.type == pygame.KEYUP:
             pass
             
-    
-
-    
-   
-    #wrapline("实验一下特别特别长的句子实验一下特别特别长的句子实验一下特别特别长的句子", FONT, 55,520)
-
-    
-
-    #pygame.display.flip()
-
-    # draw_a(500,500,200)
-    # draw_a(450,450,300)
-    
-    
-
-   
-
-
-
-
-
-    draw_circle_gua(6)
-    
     
     pygame.display.update()
     clock.tick(60)
