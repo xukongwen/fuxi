@@ -16,7 +16,7 @@ clock = pygame.time.Clock()
 
 # 屏幕宽高
 SCR_WIDTH = 1280
-SCR_HIGH = 480
+SCR_HIGH = 1280
 
 # 各种空隙
 
@@ -33,6 +33,9 @@ GAP_BOX_OUT = 10
 color = (0,255,255) 
 WHITE = (255,255,255)
 BLACK = (0,0,0)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
 Alpha = 2
 
 # 一个阳卦的长度
@@ -255,6 +258,54 @@ gua = 0
 #pygame.draw.circle(scr, BLACK,(500,200),50,2)
 
 
+def draw_circle_gua(max_num):
+    x, y = 500, 500
+    j = 100
+    space_radian = PI / 2 / 20
+    print("-----------------------------> start")
+    for num in range(1, max_num + 1):
+        gua = calc_gua(num)
+        # print("------>", num, gua)
+        max_gua_size = len(gua)
+        circle_gua_indexes = list(chain(range(0, max_gua_size // 2), range(max_gua_size - 1, max_gua_size // 2, -1)))
+        single_gua_radian = 2 * PI / (2 ** num)
+        single_gua_half_radian  = single_gua_radian / 2
+        for layer in range(num - 1, -1, -1):
+            print("------------>>", num, layer)
+            j += 20
+            y -= 10
+            x -= 10
+            count = 0
+            start_radian = PI / 2 - single_gua_half_radian + space_radian
+            end_radian = start_radian + single_gua_radian - space_radian * 2
+            for idx in circle_gua_indexes:
+                if start_radian > 2 * PI:
+                    start_radian = abs(start_radian - 2 * PI)
+                if end_radian > 2 * PI:
+                    end_radian = abs(end_radian - 2 * PI)
+
+                gua_value = gua[idx][layer]
+                print("------>", num, layer, y, idx, gua_value)
+                if gua_value == 1:
+                    print([x, y, j, j], start_radian, end_radian)
+                    pygame.draw.arc(scr, BLACK, [x, y, j, j], start_radian, end_radian, 5)
+                else:
+                    pygame.draw.arc(scr, RED, [x, y, j, j], start_radian, end_radian, 5)
+                
+                
+                start_radian += single_gua_radian
+                end_radian += single_gua_radian
+
+
+def draw_a(x,y,j):
+    pygame.draw.rect(scr, BLACK,[x,y,j,j],2)
+
+    pygame.draw.arc(scr, BLACK, [x, y, j, j], 0, PI / 2, 2)
+    pygame.draw.arc(scr, GREEN, [x, y, j, j], PI / 2, PI, 2)
+    pygame.draw.arc(scr, BLUE, [x, y, j, j], PI, 3 * PI / 2, 2)
+    pygame.draw.arc(scr, RED, [x, y, j, j], 3 * PI / 2, 2 * PI, 2)
+
+
 # 游戏的loop
 running = True
 while running:
@@ -322,10 +373,20 @@ while running:
     
 
     #pygame.display.flip()
-    
-    pygame.draw.arc(scr, BLACK,[210, 75, 150, 150], 0, PI/2, 2)
-    pygame.draw.rect(scr, BLACK,[210, 75, 150, 150],2)
 
+    # draw_a(500,500,200)
+    # draw_a(450,450,300)
+    
+    
+
+   
+
+
+
+
+
+    draw_circle_gua(6)
+    
     
     pygame.display.update()
     clock.tick(60)
