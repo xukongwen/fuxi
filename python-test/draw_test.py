@@ -8,6 +8,8 @@ from typing import Union
 from itertools import chain
 import pygame
 import pygame_gui
+import json
+
 pygame.init()
 
 # 一些常数设定
@@ -242,23 +244,46 @@ img1_sur = pygame.image.load('data/img/none-logo-black.png')
 x1 = 50
 y1 = 300
 x2 = 50
-w = 1
+
+layer = 1
+width = 5
 
 IN_BOX = None
 gua = 0
 
+rot = 0  
+rot_speed = 2 
+
 #pygame.draw.circle(scr, BLACK,(500,200),50,2)
+
+image_orig = pygame.Surface((1100 , 1100)) 
+image_orig.set_colorkey(BLACK)
+image_orig.fill(BLUE)
+image = image_orig.copy() 
+image.set_colorkey(BLACK) 
+
+rect = image.get_rect()
+rect.center = (SCR_WIDTH // 2 , SCR_HIGH // 2)
+
+def write_json(data):
+
+    with open('data/json/gua1.txt','w') as test_file:
+        json.dump(data, test_file)
 
 
 def draw_circle_gua(max_num,j,gap,width):
-    x, y = SCR_WIDTH/2 -j, SCR_HIGH/2 - j
+    x, y = 1100/2 -j, 1100/2 - j
     space_radian = PI / 2 / 20
     #print("-----------------------------> start")
     for num in range(1, max_num + 1):
         gua = calc_gua(num)
+        write_json(gua)
         # print("------>", num, gua)
         max_gua_size = len(gua)
         circle_gua_indexes = list(chain(range(0, max_gua_size // 2), range(max_gua_size - 1, max_gua_size // 2, -1)))
+       
+        #write_json(circle_gua_indexes)
+
         single_gua_radian = 2 * PI / (2 ** num)
         single_gua_half_radian  = single_gua_radian / 2
         for layer in range(num - 1, -1, -1):
@@ -279,13 +304,14 @@ def draw_circle_gua(max_num,j,gap,width):
                 #print("------>", num, layer, y, idx, gua_value)
                 if gua_value == 1:
                     #print([x, y, j, j], start_radian, end_radian)
-                    pygame.draw.arc(scr, RED, [x, y, j, j], start_radian, end_radian, width)
+                    pygame.draw.arc(image_orig, RED, [x, y, j, j], start_radian, end_radian, width)
                 else:
-                    pygame.draw.arc(scr, BLACK, [x, y, j, j], start_radian, end_radian, width)
+                    pygame.draw.arc(image_orig, BLACK, [x, y, j, j], start_radian, end_radian, width)
                 
                 
                 start_radian += single_gua_radian
                 end_radian += single_gua_radian
+
 
 
 def draw_a(x,y,j):
@@ -295,7 +321,7 @@ def draw_a(x,y,j):
     pygame.draw.arc(scr, GREEN, [x, y, j, j], PI / 2, PI, 2)
     pygame.draw.arc(scr, BLUE, [x, y, j, j], PI, 3 * PI / 2, 2)
     pygame.draw.arc(scr, RED, [x, y, j, j], 3 * PI / 2, 2 * PI, 2)
-
+draw_circle_gua(6,100,100,100)
 
 # 游戏的loop
 running = True
@@ -328,23 +354,31 @@ while running:
     
     # 可以拖拽缩放整个卦相，但是觉得画的方法有问题，应该是第一次和有变动的时候才画，现在是每一帧都画
     #draw_all_gua(all_gua,w,x1,y1)
-    draw_circle_gua(1+ w,100,20,5)
+    #draw_circle_gua(1+ layer,100 + width,20,5)
+    rot = (rot + rot_speed) % 360 
+    new_image = pygame.transform.rotate(image_orig , rot)
+    old_center = rect.center 
+    rect = new_image.get_rect()
+    rect.center = old_center 
+    scr.blit(new_image , rect)
+     
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                x1 += -1
+                width += 10
         elif event.type == pygame.MOUSEBUTTONDOWN:
             for box in ALL_BOX:
                 if box.collidepoint(event.pos):
                     IN_BOX = box
             if event.button == 4:# 向上滚放大
-                w += 1
+                layer += 1
 
             elif event.button == 5:# 向下滚缩小
-                w += -1
+                layer += -1
                 
         elif event.type == pygame.MOUSEBUTTONUP:
             IN_BOX = None  
@@ -360,3 +394,7 @@ while running:
     
     pygame.display.update()
     clock.tick(60)
+
+
+# 初步结果很有趣，就是内环的单个挂的弧度大于外环的，随着指数的增加，外环的单体所占据弧度越来越小，正是意识越来越狭小
+# 的样貌，那么如果以单体所在据弧度大小为“胜利”的话，那么显然内环因为数量稀少而胜利了
