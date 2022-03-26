@@ -1,4 +1,5 @@
 import sys
+import json 
 from pprint import pprint
 
 
@@ -39,4 +40,6 @@ def calc_gua(num):
 if __name__ == "__main__":
    # calc = GuaCalculator(int(sys.argv[1]))
    # pprint(calc(int(sys.argv[2])))
-   pprint(calc_gua(int(sys.argv[1])))
+#    pprint(calc_gua(int(sys.argv[1])))
+    num = int(sys.argv[1])
+    json.dump(calc_gua(num), open("gua-{}.json".format(num), "w"))
