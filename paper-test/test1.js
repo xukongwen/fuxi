@@ -137,7 +137,7 @@ var gua6 = [[1, 1, 1, 1, 1, 1],
 
 
 
-// 画基本的横向阴阳渐变图 
+// 画基本的横向阴阳渐变图
 var topLeft = [20, 80];
 var bottomRight = [1000, 50];//这里竟然是增加的值
 
@@ -163,6 +163,21 @@ circle.strokeColor = gradientColorCircle;
 circle.strokeWidth = 50;
 
 
+//所有动画都写在这里
+function onFrame(event) {
+	// 动画事件被触发了多少次
+	//console.log(event.count);
+
+	// The total amount of time passed since
+	// the first frame event in seconds:
+	//console.log(event.time);
+
+	// The time passed in seconds since the last frame event:
+	//console.log(event.delta);
+	
+	// 每一帧旋转3°
+  	circle.rotate(3);
+}
 
 
 
